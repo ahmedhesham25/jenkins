@@ -1,14 +1,13 @@
+import datetime
 import sqlite3
 from sqlite3 import Error
-import jenkins
-import datetime
 
+import jenkins
 
 db = "jenkins.db"
 url = "http://localhost:8080"
 username = "your_username"
 password = "your_password"
-
 
 
 def db_connect(db_file):
@@ -23,7 +22,8 @@ def db_connect(db_file):
 def create_schema(conn):
     """ create SQLite database tables if not exist """
     try:
-        conn.execute("CREATE TABLE job (id integer primary key, name TEXT UNIQUE ON CONFLICT IGNORE, status TEXT, [timestamp] timestamp)")
+        conn.execute(
+            "CREATE TABLE job (id integer primary key, name TEXT UNIQUE ON CONFLICT IGNORE, status TEXT, [timestamp] timestamp)")
         conn.commit()
     except Error as e:
         print(e)
@@ -61,7 +61,8 @@ def jobs_loop(conn, jobs, db_jobs):
     c = conn.cursor()
     if len(jobs) != 0:
         for job in jobs:
-            c.execute("REPLACE INTO job (name, status, timestamp) VALUES (?, ?, ?)", (job["fullname"], job["color"], datetime.datetime.now()))
+            c.execute("REPLACE INTO job (name, status, timestamp) VALUES (?, ?, ?)",
+                      (job["fullname"], job["color"], datetime.datetime.now()))
         conn.commit()
         print("records saved in db")
     else:
@@ -80,7 +81,7 @@ if __name__ == '__main__':
 
     except Error as e:
         print(e)
-    
+
     finally:
         conn.close()
 
